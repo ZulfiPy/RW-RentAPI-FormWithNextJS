@@ -1,7 +1,9 @@
+import HomeCarousel from "@/components/HomeModuleCarousel";
+
 export default function Home() {
   return (
-   <>
-    Init project
-   </>
+    <div className="flex min-h-screen justify-center items-center">
+      <HomeCarousel />
+    </div>
   );
 }
