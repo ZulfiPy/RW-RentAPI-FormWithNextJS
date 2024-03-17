@@ -2,8 +2,8 @@ import HomeCarousel from "@/components/HomeModuleCarousel";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen justify-center items-center">
+    <section className="container flex flex-col items-center justify-center min-h-screen mx-auto">
       <HomeCarousel />
-    </div>
+    </section>
   );
 }
