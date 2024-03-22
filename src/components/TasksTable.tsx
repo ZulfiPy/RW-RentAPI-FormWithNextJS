@@ -14,18 +14,18 @@ export default function TasksTable() {
     return (
         <div className="text-left">
             <Table>
-                <TableCaption>A list of tasks that need to be done at work.</TableCaption>
+                <TableCaption className="text-black">A list of tasks that need to be done at work.</TableCaption>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>№</TableHead>
-                        <TableHead>Title</TableHead>
-                        <TableHead >Description</TableHead>
-                        <TableHead>Priority</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Created At</TableHead>
-                        <TableHead>View</TableHead>
-                        <TableHead>Edit</TableHead>
-                        <TableHead>Delete</TableHead>
+                        <TableHead className="text-black">№</TableHead>
+                        <TableHead className="text-black">Title</TableHead>
+                        <TableHead className="text-black">Description</TableHead>
+                        <TableHead className="text-black">Priority</TableHead>
+                        <TableHead className="text-black">Status</TableHead>
+                        <TableHead className="text-black">Created At</TableHead>
+                        <TableHead className="text-black">View</TableHead>
+                        <TableHead className="text-black">Edit</TableHead>
+                        <TableHead className="text-black">Delete</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>

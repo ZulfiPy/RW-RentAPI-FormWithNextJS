@@ -1,11 +1,4 @@
 'use client'
-import { useRouter } from "next/navigation";
-
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-
-import { Button } from "./ui/button";
 import {
     Form,
     FormControl,
@@ -22,26 +15,22 @@ import {
     SelectTrigger,
     SelectValue
 } from "./ui/select";
+import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
-const formSchema = z.object({
-    title: z.string().min(2,
-        { message: "Title must be a least 2 characters." }).max(30,
-            { message: "Title must fit into 30 characters." }),
-    description: z.string().min(2,
-        { message: "Description must be a least 2 characters," }).max(100,
-            { message: "Description must fit into 100 characters." }),
-    priority: z.string().min(1,
-        { message: "Please select priority of task." }),
-    status: z.string().min(2,
-        { message: "Status must be at least 2 characters" }).max(20,
-            { message: "Status must fit into 100 characters." }),
-})
+import { useRouter } from "next/navigation";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+
+import taskSchema from "@/validators/task";
+
+type taskInputType = z.infer<typeof taskSchema>
 
 const InputTaskForm = () => {
     const router = useRouter();
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<taskInputType>({
+        resolver: zodResolver(taskSchema),
         defaultValues: {
             title: "",
             description: "",
@@ -50,10 +39,10 @@ const InputTaskForm = () => {
         },
     });
 
-    function handleSubmittedForm(values: z.infer<typeof formSchema>) {
+    function handleSubmittedForm(values: taskInputType) {
         console.log(values);
         form.reset();
-    }
+    };
 
     return (
         <div>
@@ -66,7 +55,7 @@ const InputTaskForm = () => {
                         name="title"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Title</FormLabel>
+                                <FormLabel>Title:</FormLabel>
                                 <FormControl>
                                     <Input placeholder="Enter task title" {...field} />
                                 </FormControl>
@@ -83,7 +72,7 @@ const InputTaskForm = () => {
                         name="description"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Description</FormLabel>
+                                <FormLabel>Description:</FormLabel>
                                 <FormControl>
                                     <Input placeholder="Enter task description" {...field} />
                                 </FormControl>
@@ -100,7 +89,7 @@ const InputTaskForm = () => {
                         name="priority"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Priorty</FormLabel>
+                                <FormLabel>Priorty:</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl>
                                         <SelectTrigger>
@@ -126,7 +115,7 @@ const InputTaskForm = () => {
                         name="status"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Status</FormLabel>
+                                <FormLabel>Status:</FormLabel>
                                 <FormControl>
                                     <Input placeholder="Enter task description" {...field} />
                                 </FormControl>
@@ -137,12 +126,15 @@ const InputTaskForm = () => {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit" className="w-1/2  self-center">Add New Task</Button>
+                    <Button
+                        type="submit"
+                        className="self-center p-5 font-bold text-md"
+                    >Add New Task</Button>
                     <Button
                         type="button"
                         onClick={() => router.push('/tasks')}
-                        className="py-7"
-                        >Check Tasks Table</Button>
+                        className="py-7 font-bold text-md"
+                    >Check Tasks Table</Button>
                 </form>
             </Form>
         </div>
