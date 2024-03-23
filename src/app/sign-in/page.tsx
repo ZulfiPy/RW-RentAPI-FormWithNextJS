@@ -1,7 +1,9 @@
+import LoginForm from "@/components/LoginForm";
+
 export default function SignInPage() {
     return (
-        <section>
-            Sign in page
+        <section className="container flex flex-col items-center min-h-screen">
+            <LoginForm />
         </section>
     )
 }
