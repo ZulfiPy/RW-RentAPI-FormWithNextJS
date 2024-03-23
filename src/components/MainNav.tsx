@@ -29,7 +29,7 @@ export default function MainNav() {
                         <div className="order-1 font-semibold">
                             <NavigationMenuItem>
                                 <Link href="/" legacyBehavior passHref>
-                                    <NavigationMenuLink className="text-lg">
+                                    <NavigationMenuLink className="font-bold">
                                         Home
                                     </NavigationMenuLink>
                                 </Link>
@@ -39,7 +39,7 @@ export default function MainNav() {
                         <div className="order-2 w-80 flex justify-around font-semibold ">
                             <NavigationMenuItem>
                                 <Link href="/server" legacyBehavior passHref>
-                                    <NavigationMenuLink className="text-lg">
+                                    <NavigationMenuLink className="font-bold">
                                         Server
                                     </NavigationMenuLink>
                                 </Link>
@@ -47,7 +47,7 @@ export default function MainNav() {
 
                             <NavigationMenuItem>
                                 <Link href="/client" legacyBehavior passHref>
-                                    <NavigationMenuLink className="text-lg">
+                                    <NavigationMenuLink className="font-bold">
                                         Client
                                     </NavigationMenuLink>
                                 </Link>
@@ -55,7 +55,7 @@ export default function MainNav() {
 
                             <NavigationMenuItem>
                                 <Link href="/about" legacyBehavior passHref>
-                                    <NavigationMenuLink className="text-lg">
+                                    <NavigationMenuLink className="font-bold">
                                         My Info
                                     </NavigationMenuLink>
                                 </Link>
@@ -64,11 +64,11 @@ export default function MainNav() {
 
                         <div className="order-3 flex flex-col items-center space-y-3 md:space-x-4 md:space-y-0 md:flex-row">
                             <Button
-                                className="font-bold p-5 text-lg"
+                                className="font-bold p-5"
                                 onClick={() => router.push('/sign-in')}
-                            >Log In</Button>
+                            >Sign In</Button>
                             <Button
-                                className="font-bold p-5 text-lg"
+                                className="font-bold p-5"
                                 onClick={() => router.push('/register')}
                             >Register</Button>
                             <DropdownMenu>

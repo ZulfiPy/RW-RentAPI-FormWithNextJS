@@ -65,18 +65,17 @@ const RegisterForm = () => {
     }
 
     return (
-        <div className="container flex justify-center mt-10">
+        <div className="mt-10">
             <Card>
                 <CardHeader>
                     <CardTitle>Register</CardTitle>
-                    <CardDescription>Please provide accurate and complete information for successful registration.</CardDescription>
+                    <CardDescription>Provide accurate and complete information for successful registration.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Form {...form}>
                         <form
                             className="flex flex-col"
                             onSubmit={form.handleSubmit(handleRegisterForm)}>
-
                             <div className={cn("space-y-5", { hidden: formStep === 1 })}>
                                 {/* First name */}
                                 <FormField
