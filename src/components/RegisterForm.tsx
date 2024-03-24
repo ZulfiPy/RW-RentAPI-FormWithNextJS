@@ -4,7 +4,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-
 import {
     Form,
     FormControl,
@@ -22,12 +21,14 @@ import {
     CardTitle
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "./ui/input";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import registerSchema from "@/validators/register";
-import { useToast } from "./ui/use-toast";
 
+import bcrypt from "bcryptjs";
 type registerInputType = z.infer<typeof registerSchema>
 
 const RegisterForm = () => {
@@ -49,8 +50,27 @@ const RegisterForm = () => {
         }
     });
 
-    function handleRegisterForm(values: registerInputType) {
-        console.log(values);
+    interface RegisterUserData {
+        firstName: string,
+        lastName: string,
+        email: string,
+        isikukood: string,
+        birthDate: string,
+        username: string,
+        password: string
+    }
+
+    const dataToRegisterUser: RegisterUserData = {
+        firstName: "",
+        lastName: "",
+        email: "",
+        isikukood: "",
+        birthDate: "",
+        username: "",
+        password: "",
+    };
+
+    async function handleRegisterForm(values: registerInputType) {
         if (values.password !== values.confirmPassword) {
             toast({
                 title: "Passwords do not match",
@@ -59,9 +79,73 @@ const RegisterForm = () => {
             console.log('form reset unsuccessful');
             return;
         }
-        console.log('form reset successful');
-        form.reset();
-        setFormStep(0);
+
+        const hashedPwd = await bcrypt.hash(values.password, 10);
+
+        const formattedDay = values.day.toString().length < 2 ? `0${values.day}` : values.day;
+        const formattedMonth = values.month.toString().length < 2 ? `0${values.month}` : values.month;
+        const formattedBirthDate = `${formattedDay}.${formattedMonth}.${values.year}`;
+
+        dataToRegisterUser.firstName = values.firstName;
+        dataToRegisterUser.lastName = values.lastName;
+        dataToRegisterUser.email = values.email;
+        dataToRegisterUser.isikukood = values.isikukood;
+        dataToRegisterUser.birthDate = formattedBirthDate;
+        dataToRegisterUser.username = values.username;
+        dataToRegisterUser.password = hashedPwd;
+
+        await registerUser(dataToRegisterUser);
+    }
+
+    async function registerUser(formData: RegisterUserData) {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_DOMAIN}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (res.status === 200) {
+                const data = await res.json();
+                console.log('data', data);
+                form.reset();
+                setFormStep(0);
+            } else if (res.status === 409) {
+                toast({
+                    title: "User has to be unique(unique data required: email, isikukood and username.\n If you have an account, try to recover it.",
+                    variant: "destructive"
+                });
+            }
+        } catch (error) {
+            console.log(error);
+            toast({
+                title: "Something went wrong",
+                variant: "destructive"
+            });
+        }
+    }
+
+    async function proceedToNextStep() {
+        await form.trigger(['firstName', 'lastName', 'email', 'isikukood', 'day', 'month', 'year']);
+
+        const firstNameState = form.getFieldState('firstName');
+        const lastNameState = form.getFieldState('lastName');
+        const emailState = form.getFieldState('email');
+        const isikukoodState = form.getFieldState('isikukood');
+        const dayState = form.getFieldState('day');
+        const monthState = form.getFieldState('month');
+        const yearState = form.getFieldState('year');
+
+        if (!firstNameState.isDirty || firstNameState.invalid) return;
+        if (!lastNameState.isDirty || lastNameState.invalid) return;
+        if (!emailState.isDirty || emailState.invalid) return;
+        if (!isikukoodState.isDirty || isikukoodState.invalid) return;
+        if (!dayState.isDirty || dayState.invalid) return;
+        if (!monthState.isDirty || monthState.invalid) return;
+        if (!yearState.isDirty || yearState.invalid) return;
+        setFormStep(1);
     }
 
     return (
@@ -303,27 +387,7 @@ const RegisterForm = () => {
                                     type="button"
                                     className={cn("font-bold", { hidden: formStep === 1 })}
                                     variant={"ghost"}
-                                    onClick={() => {
-                                        form.trigger(['firstName', 'lastName', 'email', 'isikukood', 'day', 'month', 'year']);
-
-                                        const firstNameState = form.getFieldState('firstName');
-                                        const lastNameState = form.getFieldState('lastName');
-                                        const emailState = form.getFieldState('email');
-                                        const isikukoodState = form.getFieldState('isikukood');
-                                        const dayState = form.getFieldState('day');
-                                        const monthState = form.getFieldState('month');
-                                        const yearState = form.getFieldState('year');
-
-                                        if (!firstNameState.isDirty || firstNameState.invalid) return;
-                                        if (!lastNameState.isDirty || lastNameState.invalid) return;
-                                        if (!emailState.isDirty || emailState.invalid) return;
-                                        if (!isikukoodState.isDirty || isikukoodState.invalid) return;
-                                        if (!dayState.isDirty || dayState.invalid) return;
-                                        if (!monthState.isDirty || monthState.invalid) return;
-                                        if (!yearState.isDirty || yearState.invalid) return;
-
-                                        setFormStep(1);
-                                    }}
+                                    onClick={proceedToNextStep}
                                 >
                                     Next Step
                                     <ArrowRight className="w-4 h-4 ml-2" />
