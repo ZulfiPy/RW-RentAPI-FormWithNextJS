@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import * as React from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import AuthProvider from "@/components/AuthProvider";
 
 export const metadata: Metadata = {
   title: "RW-Rent",
@@ -24,10 +25,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
-          <main>
-            {children}
-          </main>
+          <AuthProvider>
+            <Header />
+            <main>
+              {children}
+            </main>
+          </AuthProvider>
           <Toaster />
         </ThemeProvider>
       </body>
