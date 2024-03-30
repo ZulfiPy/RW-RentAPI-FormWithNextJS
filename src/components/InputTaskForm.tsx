@@ -22,12 +22,16 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useToast } from "./ui/use-toast";
+import { useSession } from "next-auth/react";
 
 import taskSchema from "@/validators/task";
 
 type taskInputType = z.infer<typeof taskSchema>
 
 const InputTaskForm = () => {
+    const { data: session } = useSession();
+    const { toast } = useToast();
     const router = useRouter();
     const form = useForm<taskInputType>({
         resolver: zodResolver(taskSchema),
@@ -39,9 +43,31 @@ const InputTaskForm = () => {
         },
     });
 
-    function handleSubmittedForm(values: taskInputType) {
-        console.log(values);
-        form.reset();
+    async function fetchNewTaskData(values: taskInputType) {
+        console.log({ ...values, user: session?.user?.id });
+        const newTask = await fetch('/api/tasks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ ...values, user: session?.user?.id })
+        })
+
+        return newTask;
+    }
+
+    async function handleSubmittedForm(values: taskInputType) {
+        const response = await fetchNewTaskData(values);
+
+        if (response.ok && response.status === 201) {
+            form.reset();
+            return;
+        }
+        // not OK and not 201
+        toast({
+            'title': 'Add new tasks unsuccessful',
+            'variant': 'destructive'
+        });
     };
 
     return (
@@ -117,7 +143,7 @@ const InputTaskForm = () => {
                             <FormItem>
                                 <FormLabel>Status:</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Enter task description" {...field} />
+                                    <Input placeholder="Enter task status" {...field} />
                                 </FormControl>
                                 <FormDescription>
                                     Ex.: Started/Close to Finish/Finished
@@ -128,12 +154,12 @@ const InputTaskForm = () => {
                     />
                     <Button
                         type="submit"
-                        className="self-center p-5 font-bold text-md"
+                        className="self-center p-5 font-bold"
                     >Add New Task</Button>
                     <Button
                         type="button"
                         onClick={() => router.push('/tasks')}
-                        className="py-7 font-bold text-md"
+                        className="py-7 font-bold"
                     >Check Tasks Table</Button>
                 </form>
             </Form>
