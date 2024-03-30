@@ -16,10 +16,12 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function MainNav() {
     const router = useRouter();
     const { setTheme } = useTheme();
+    const { data: session } = useSession();
 
     return (
         <div className="shadow shadow-gray-300 px-8 flex justify-center">
@@ -54,23 +56,39 @@ export default function MainNav() {
                             </NavigationMenuItem>
 
                             <NavigationMenuItem>
-                                <Link href="/about" legacyBehavior passHref>
+                                <Link href="/components" legacyBehavior passHref>
                                     <NavigationMenuLink className="font-bold">
-                                        My Info
+                                        Components
                                     </NavigationMenuLink>
                                 </Link>
                             </NavigationMenuItem>
                         </div>
 
                         <div className="order-3 flex flex-col items-center space-y-3 md:space-x-4 md:space-y-0 md:flex-row">
-                            <Button
-                                className="font-bold p-5"
-                                onClick={() => router.push('/sign-in')}
-                            >Sign In</Button>
-                            <Button
-                                className="font-bold p-5"
-                                onClick={() => router.push('/register')}
-                            >Register</Button>
+                            {session?.user ?
+                                (
+                                    <>
+                                        <Button
+                                            className="font-bold p-5"
+                                            onClick={() => router.push('/my-info')}
+                                        >My Profile</Button>
+                                        <Button
+                                            className="font-bold p-5"
+                                            onClick={() => signOut({ callbackUrl: "/about" })}
+                                        >Sign Out</Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Button
+                                            className="font-bold p-5"
+                                            onClick={() => signIn()}
+                                        >Sign In</Button>
+                                        <Button
+                                            className="font-bold p-5"
+                                            onClick={() => router.push('/register')}
+                                        >Register</Button>
+                                    </>
+                                )}
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button size="icon">
@@ -96,6 +114,6 @@ export default function MainNav() {
                 </NavigationMenuList>
 
             </NavigationMenu>
-        </div>
+        </div >
     )
 }
