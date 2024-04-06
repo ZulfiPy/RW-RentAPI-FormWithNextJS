@@ -11,7 +11,7 @@ export default function TasksPage() {
             <h1 className="text-3xl font-bold  mt-10">Tasks Table</h1>
             <TasksTable />
             <Button
-                className="py-8 shadow-2xl font-bold"
+                className="py-8 shadow-2xl font-bold text-md"
                 onClick={() => router.push('/new-task')}>
                 Add a New Task
             </Button>
