@@ -11,4 +11,18 @@ declare global {
     }
 }
 
-export default globalж
+interface User {
+    id: string,
+    username: string,
+    name: string,
+    email: string,
+    roles: String[]
+}
+
+declare global {
+    interface Session {
+        user?: User
+    }
+}
+
+export default global;
