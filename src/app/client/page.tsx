@@ -1,6 +1,6 @@
 export default function ClientPage() {
     return (
-        <section>
+        <section className="container flex flex-col items-center justify-center min-h-screen">
             Client Page
         </section>
     )
