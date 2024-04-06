@@ -18,9 +18,9 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
-import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useToast } from "./ui/use-toast";
 import { useSession } from "next-auth/react";
@@ -44,14 +44,13 @@ const InputTaskForm = () => {
     });
 
     async function fetchNewTaskData(values: taskInputType) {
-        console.log({ ...values, user: session?.user?.id });
         const newTask = await fetch('/api/tasks', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ ...values, user: session?.user?.id })
-        })
+        });
 
         return newTask;
     }
@@ -61,6 +60,7 @@ const InputTaskForm = () => {
 
         if (response.ok && response.status === 201) {
             form.reset();
+            router.push('/tasks');
             return;
         }
         // not OK and not 201
@@ -74,7 +74,7 @@ const InputTaskForm = () => {
         <div>
             <Form {...form}>
                 <form
-                    className="flex flex-col space-y-4"
+                    className="flex flex-col space-y-4 border-2 rounded-lg p-8"
                     onSubmit={form.handleSubmit(handleSubmittedForm)}>
                     <FormField
                         control={form.control}
@@ -83,7 +83,7 @@ const InputTaskForm = () => {
                             <FormItem>
                                 <FormLabel>Title:</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Enter task title" {...field} />
+                                    <Input placeholder="Enter a task title" {...field} />
                                 </FormControl>
                                 <FormDescription>
                                     Ex.: Insurance, Discount Cards...
@@ -100,7 +100,7 @@ const InputTaskForm = () => {
                             <FormItem>
                                 <FormLabel>Description:</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Enter task description" {...field} />
+                                    <Input placeholder="Enter a task description" {...field} />
                                 </FormControl>
                                 <FormDescription>
                                     Ex.: Order new discount cards
@@ -154,13 +154,13 @@ const InputTaskForm = () => {
                     />
                     <Button
                         type="submit"
-                        className="self-center p-5 font-bold"
-                    >Add New Task</Button>
+                        className="self-center p-5 font-bold">
+                        Add a New Task</Button>
                     <Button
                         type="button"
                         onClick={() => router.push('/tasks')}
-                        className="py-7 font-bold"
-                    >Check Tasks Table</Button>
+                        className="py-7 font-bold">
+                        Check Tasks Table</Button>
                 </form>
             </Form>
         </div>
