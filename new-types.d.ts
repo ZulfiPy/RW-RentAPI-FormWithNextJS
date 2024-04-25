@@ -6,7 +6,6 @@ declare global {
         description: string,
         priority: string,
         status: string,
-        status: string,
         createdAt: string
     }
 }
@@ -25,4 +24,4 @@ declare global {
     }
 }
 
-export default global;
+export { };
